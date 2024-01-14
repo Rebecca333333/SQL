@@ -65,7 +65,7 @@ FROM fortune_companies
 ORDER BY maternity_leave_weeks desc;
 
 # Which industries have a total revenue greater than 300?
-SELECT industry,SUM(revenue) AS total_revenue
+SELECT industry, ROUND(SUM(revenue),1) AS total_revenue
 FROM fortune_companies
 GROUP BY industry
 HAVING SUM(revenue)>=300;
