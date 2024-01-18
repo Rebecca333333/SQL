@@ -1,3 +1,5 @@
+#For this SQL project, I'm querying a database with multiple tables to analyze customer and order statistics.
+
 SELECT COUNT (orderID)
 FROM BIT_DB.JanSales
 WHERE length(orderID)=6
