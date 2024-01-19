@@ -28,9 +28,16 @@ time_signature integer NOT NULL
 
 #Next, I started creating queries from my new Spotify table. 
 
-1.What is the average duration for each track?
-SELECT track_name, AVG(duration_ms) AS average_duration
+1. What is the average duration for each track?
+SELECT artist_name, track_name, AVG(duration_ms) AS average_duration
 FROM BIT_DB.Spotifydata
-GROUP BY duration
+GROUP BY duration_ms
 ORDER BY duration_ms desc;
+
+2. What were the top five songs with the most energy?
+SELECT artist_name, track_name, energy
+FROM BIT_DB.Spotifydata
+ORDER BY energy desc
+LIMIT 5;
+
 
