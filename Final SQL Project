@@ -1,0 +1,112 @@
+# In this project, I am querying a database called Chinook that has eleven tables, all of which connect to each other in certain ways. Most tables have recorded data that include
+statistics about albums, genres, tracks, as well as employee and customer data. Each questions answers certain aspects of each table, and how they relate to each other.
+
+#1.Retrieve all albums with their corresponding artist.
+
+SELECT al.Title AS AlbumName, art.Name AS ArtistName
+FROM chinook.albums al
+INNER JOIN chinook.artists art ON al.ArtistId=art.ArtistId;
+
+
+#2.List all customers along with their contact information.
+
+SELECT FirstName, LastName, Address, City, State, Country, PostalCode, Phone, Email
+FROM chinook.customers;
+
+
+#3.Find the total sales amount for each invoice.
+
+SELECT InvoiceId, SUM(UnitPrice*Quantity) AS TotalSales
+FROM chinook.invoice_items
+GROUP BY InvoiceId;
+
+#4.Retrieve the names of playlists along with the number of tracks in each playlist.
+
+SELECT p.Name AS PlaylistName, COUNT(t.TrackId) AS NumberOfTracks
+FROM chinook.playlists p
+LEFT JOIN chinook.playlist_track t ON p.PlaylistId = t.PlaylistId
+GROUP BY p.PlaylistId;
+
+
+#5.Find the top-selling genres and their total sales amount.
+
+SELECT g.Name AS GenreName, COUNT(i.UnitPrice*i.Quantity)AS TotalSales
+FROM chinook.genres g
+INNER JOIN chinook.tracks t ON g.GenreId= t.GenreId
+INNER JOIN chinook.invoice_items i ON i.TrackId=t.TrackId
+GROUP BY g.Name
+ORDER BY TotalSales desc;
+
+#6.Retrieve the number of invoices per country.
+
+SELECT BillingCountry AS Country, COUNT(InvoiceId)AS NumberOfInvoices
+FROM chinook.invoices
+GROUP BY BillingCountry
+ORDER BY NumberOfInvoices desc;
+
+#7.List all albums with their corresponding genre.
+
+SELECT a.Title AS AlbumTitle, g.Name AS GenreName
+FROM chinook.albums a
+INNER JOIN chinook.tracks t ON a.AlbumId = t.AlbumId
+INNER JOIN chinook.genres g ON t.GenreId = g.GenreId;
+
+#8.Find the average length of tracks for each media type.
+
+SELECT m.Name AS MediaType, AVG(t.Milliseconds) AS AverageLength
+FROM chinook.media_types m
+INNER JOIN chinook.tracks t ON m.MediaTypeId=t.MediaTypeId
+GROUP BY MediaType;
+
+#9.Retrieve the total sales for each artist.
+
+SELECT art.Name AS Artist, SUM(i.UnitPrice*i.Quantity)AS TotalSales
+FROM chinook.artists art
+INNER JOIN chinook.albums al ON art.ArtistId=al.ArtistId
+INNER JOIN chinook.tracks t ON al.AlbumId=t.AlbumId
+INNER JOIN chinook.invoice_items i ON t.TrackId=i.TrackId
+GROUP BY Artist
+ORDER BY TotalSales desc;
+
+#10.Retrieve the top 5 customers who have spent the most.
+
+SELECT c.FirstName, c.LastName, SUM(ii.UnitPrice * ii.Quantity) AS TotalSpent
+FROM chinook.customers c
+INNER JOIN chinook.invoices i ON c.CustomerId = i.CustomerId
+INNER JOIN chinook.invoice_items ii ON i.InvoiceId = ii.InvoiceId
+GROUP BY c.CustomerId
+ORDER BY TotalSpent desc
+LIMIT 5;
+
+#11.Find the number of tracks in each album.
+
+SELECT a.Title AS Album, COUNT(t.Name) AS NumberOfTracks
+FROM chinook.tracks t
+LEFT JOIN chinook.albums a ON t.AlbumId=a.AlbumId
+GROUP BY a.Title;
+
+#12.List all unique genres available in the database.
+
+SELECT DISTINCT Name AS Genre
+FROM chinook.genres;
+
+#13.Retrieve the total number of invoices and the average total amount per invoice.
+
+SELECT COUNT(InvoiceId)AS TotalInvoices, AVG(Total) AS AverageTotal
+FROM chinook.invoices;
+
+#14.Find the longest track in each genre.
+
+SELECT g.Name AS Genre, MAX(Milliseconds)AS LongestTrack
+FROM chinook.genres g
+INNER JOIN chinook.tracks t ON g.GenreId=t.GenreId
+GROUP BY Genre
+ORDER BY LongestTrack desc;
+
+#15.List all employees and the number of customers they support.
+
+SELECT e.LastName, e.FirstName, COUNT(DISTINCT c.CustomerId)AS NumberOfCustomers
+FROM chinook.employees e
+LEFT JOIN chinook.customers c ON e.EmployeeID=c.SupportRepId
+GROUP BY e.EmployeeId;
+
